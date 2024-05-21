@@ -23,6 +23,6 @@ class AppointmentApproved extends Mailable
     {
         return $this->subject($this->subject)
                     ->view('emails.appointment_approved')
-                    ->with(['body' => $this->body]);
+                    ->with(['msg' => $this->body]);
     }
 }
