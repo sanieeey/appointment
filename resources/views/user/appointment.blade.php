@@ -104,7 +104,7 @@
     </style>
 </head>
 <body>
-    <div class="menu-bar">
+    {{-- <div class="menu-bar">
         <a href="{{ route('appointment') }}">Appointment</a>
         <a href="{{ route('progress') }}">Progress</a>
         <a href="{{ route('logout') }}">Logout</a>
@@ -113,69 +113,84 @@
                 {{ auth()->user()->name }}({{ auth()->user()->role }})
             </span>
         @endif
-    </div>
+    </div> --}}
 
-    <div class="container">
-        <h1>Book an Appointment</h1>
+@extends('layouts.app', [
+    'class' => '',
+    'elementActive' => 'userAppointment'
+])
 
-        <form id="appointmentform">
-            @csrf
-            <div class="column">
-                <label for="firstname">First Name:</label>
-                <input type="text" name="firstname" id="firstname" required>
-
-                <label for="lastname">Last Name:</label>
-                <input type="text" name="lastname" id="lastname" required>
-
-                <label for="middlename">Middle Name:</label>
-                <input type="text" name="middlename" id="middlename">
-
-                <label for="edit_birthdate">BirthDate</label>
-                <select class="form-control" id="edit_birthdate_day" name="birthdate_day" required>
-                    <option value="">Day</option>
-                    @for ($day = 1; $day <= 31; $day++)
-                        <option value="{{ $day }}">{{ $day }}</option>
-                    @endfor
-                </select>
-                <select class="form-control mt-2" id="edit_birthdate_month" name="birthdate_month" required>
-                    <option value="">Month</option>
-                    @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                        <option value="{{ $month }}">{{ $month }}</option>
-                    @endforeach
-                </select>
-                <select class="form-control mt-2" id="edit_birthdate_year" name="birthdate_year" required>
-                    <option value="">Year</option>
-                    @for ($year = date('Y'); $year >= 1900; $year--)
-                        <option value="{{ $year }}">{{ $year }}</option>
-                    @endfor
-                </select>
+@section('content')
+    <div class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card demo-icons">
+                    <div class="card-header">
+                        <h1>Book an Appointment</h1>
+                    </div>
+                    <div class="card-body">
+                        <form id="appointmentform">
+                            @csrf
+                            <div class="column">
+                                <label for="firstname">First Name:</label>
+                                <input type="text" name="firstname" id="firstname" required>
+    
+                                <label for="lastname">Last Name:</label>
+                                <input type="text" name="lastname" id="lastname" required>
+    
+                                <label for="middlename">Middle Name:</label>
+                                <input type="text" name="middlename" id="middlename">
+    
+                                <label for="edit_birthdate">Birth Date</label>
+                                <input type="date" class="form-control" name="birthday">
+                                {{-- <select class="form-control" id="edit_birthdate_day" name="birthdate_day" required>
+                                    <option value="">Day</option>
+                                    @for ($day = 1; $day <= 31; $day++)
+                                        <option value="{{ $day }}">{{ $day }}</option>
+                                    @endfor
+                                </select>
+                                <select class="form-control mt-2" id="edit_birthdate_month" name="birthdate_month" required>
+                                    <option value="">Month</option>
+                                    @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month }}">{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                                <select class="form-control mt-2" id="edit_birthdate_year" name="birthdate_year" required>
+                                    <option value="">Year</option>
+                                    @for ($year = date('Y'); $year >= 1900; $year--)
+                                        <option value="{{ $year }}">{{ $year }}</option>
+                                    @endfor
+                                </select> --}}
+                            </div>
+    
+                            <div class="column">
+                                <label for="address">Address:</label>
+                                <input type="text" name="address" id="address">
+    
+                                <label for="email">Email:</label>
+                                <input type="email" name="email" id="email" required>
+    
+                                <label for="phone_number">Phone Number:</label>
+                                <input type="text" name="phone_number" id="phone_number">
+    
+                                <label for="reason">Reason for Checkup:</label>
+                                <select name="reason" id="reason">
+                                    <option value="">--Select a reason--</option>
+                                    <option value="ophthalmology">Ophthalmology</option>
+                                    <option value="dentistry">Dentistry</option>
+                                    <option value="dermatology">Dermatology</option>
+                                    <option value="surgery">Surgery</option>
+                                    <option value="ent">ENT(ear, nose, throat)</option>
+                                </select>
+                            </div>
+                            <button class="col-2" type="submit" id="submitbtn">SUBMIT APPOINTMENT</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            <div class="column">
-                <label for="address">Address:</label>
-                <input type="text" name="address" id="address">
-
-                <label for="email">Email:</label>
-                <input type="email" name="email" id="email" required>
-
-                <label for="phone_number">Phone Number:</label>
-                <input type="text" name="phone_number" id="phone_number">
-
-                <label for="reason">Reason for Checkup:</label>
-                <select name="reason" id="reason">
-                    <option value="">--Select a reason--</option>
-                    <option value="ophthalmology">Ophthalmology</option>
-                    <option value="dentistry">Dentistry</option>
-                    <option value="dermatology">Dermatology</option>
-                    <option value="surgery">Surgery</option>
-                    <option value="ent">ENT(ear, nose, throat)</option>
-                </select>
-            </div>
-
-            <button type="submit" id="submitbtn">SUBMIT APPOINTMENT</button>
-        </form>
+        </div>
     </div>
-
+@endsection
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -204,5 +219,5 @@
             });
         });
     </script>
-</body>
-</html>
+{{-- </body>
+</html> --}}

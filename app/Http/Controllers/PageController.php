@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Appointment;
+use App\Models\User;
+use App\Models\Doctor;
 
 class PageController extends Controller
 {
@@ -22,10 +25,15 @@ class PageController extends Controller
      * @param string $page
      * @return \Illuminate\View\View
      */
-    public function index(string $page)
+    public function index()
     {
-        if (view()->exists("pages.{$page}")) {
-            return view("pages.{$page}");
+        $users = User::All();
+        $usersRole = User::where('role','user')->count();
+        $doctors = Doctor::All();
+        $appointments = Appointment::All();
+        $appointmentsInProgress = Appointment::where('status','in progress')->count();
+        if (view()->exists("pages.dashboard")) {
+            return view("pages.dashboard",compact(['users','doctors','appointments','usersRole','appointmentsInProgress',]));
         }
 
         return abort(404);

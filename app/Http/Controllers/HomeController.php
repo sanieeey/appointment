@@ -48,7 +48,7 @@ class HomeController extends Controller
 
     public function progress()
     {
-        $appointments = Appointment::all();
+        $appointments = Appointment::where('userId',auth()->id())->get();
         return view('user.progress', compact('appointments'));
     }
 

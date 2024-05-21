@@ -4,6 +4,6 @@
     <title>Appointment Approved</title>
 </head>
 <body>
-    <p>{{ $body }}</p>
+    <p>{{ $msg }}</p>
 </body>
 </html>

@@ -7,10 +7,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\OTPController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\http\Controllers\PageController;
 use App\Models\Doctor;
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +25,13 @@ use App\Models\Doctor;
 |
 */
 
+
+
+// admin
+Route::get('/dashboard', [PageController::class, 'index'])->middleware('auth')->name('page.index');
+// Route::group(['middleware' => 'auth'], function () {
+// 	Route::get('{page}', ['as' => 'page.index', 'uses' => 'App\Http\Controllers\PageController@index']);
+// });
 
 
 Route::get('/', function () {
@@ -64,7 +73,7 @@ Route::post('login', [LoginController::class, 'login'])->name('login.post');
 // Route::get('/pages/index', [HomeController::class, 'index'])->name('pages.index');
 Route::get('/tables', [HomeController::class, 'pass'])->name('tables');
 Route::get('/typography', [HomeController::class, 'docpass'])->name('typography');
-Route::get('/progress', [HomeController::class, 'progress'])->name('user.progress');
+Route::get('/progress', [HomeController::class, 'progress'])->name('progress');
 // Route::get('/progress', [AppointmentController::class, 'progress'])->name('user.progress');
 
 
@@ -88,6 +97,9 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::post('/appointment', [AppointmentController::class, 'store'])->name('user.appointment');
 Route::get('/icons', [AppointmentController::class, 'index'])->name('icons');
+Route::get('/appointment/{id}', [AppointmentController::class, 'getAppointment'])->name('getAppointment');
+Route::post('/appointment/delete/{id}', [AppointmentController::class, 'deleteAppointment'])->name('deleteAppointment');
+Route::post('/appointment/save', [AppointmentController::class, 'saveAppointment'])->name('saveAppointment');
 Route::post('/appointment/{id}/reject', [AppointmentController::class, 'cancel'])->name('appointment.reject');
 
 Route::post('/appointment/{id}/approve', [AppointmentController::class, 'approve']);
@@ -100,9 +112,9 @@ Route::get('/appointment', function () {
     return view('user.appointment');
 })->name('appointment');
 
-Route::get('/progress', function () {
-    return view('user.progress');
-})->name('progress');
+// Route::get('/progress', function () {
+//     return view('user.progress');
+// })->name('progress');
 
 // Route::get('/userlogout', function () {
 //     return redirect()->route('login');
@@ -117,10 +129,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 });
 
-Route::group(['middleware' => 'auth'], function () {
-	Route::get('{page}', ['as' => 'page.index', 'uses' => 'App\Http\Controllers\PageController@index']);
-});
-
 // Route::post('/login', [LoginController::class, 'ajaxLogin'])->name('ajaxLogin');
 
 // Route::post('/login', [LoginController::class, 'login'])->middleware('throttle_login');
@@ -133,9 +141,6 @@ Route::post('login', [LoginController::class, 'login'])->middleware('throttle.lo
 
 // Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
 //Route::get('/tables', [HomeController::class, 'pass'])->name('tables');
-
-
-
 
 
 

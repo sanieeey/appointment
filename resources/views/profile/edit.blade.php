@@ -32,13 +32,13 @@
                             @ {{ __(auth()->user()->name)}}
                             </p>
                         </div>
-                        <p class="description text-center">
+                        {{-- <p class="description text-center">
                             {{ __('I like the way you work it') }}
                             <br> {{ __('No diggity') }}
                             <br> {{ __('I wanna bag it up') }}
-                        </p>
+                        </p> --}}
                     </div>
-                    <div class="card-footer">
+                    {{-- <div class="card-footer">
                         <hr>
                         <div class="button-container">
                             <div class="row">
@@ -62,9 +62,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
-                <div class="card">
+                {{-- <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">{{ __('Team Members') }}</h4>
                     </div>
@@ -135,7 +135,7 @@
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div> --}}
             </div>
             <div class="col-md-8 text-center">
                 <form class="col-md-12" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">

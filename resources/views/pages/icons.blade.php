@@ -115,12 +115,14 @@
                         <div class="form-group">
                             <label for="doctor">Select Doctor</label>
                             <select class="form-control" id="doctor" name="doctor" required>
-                                <!-- Doctors options will be dynamically populated here -->
+                                @foreach ($doctors as $doctor)
+                                    <option value="{{ $doctor->id }}">{{ $doctor->firstname }} {{ $doctor->lastname }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="appointmentDate">Appointment Date</label>
-                            <div id="calendar"></div> <!-- Calendar div -->
+                            <input class="form-control" id="appointmentDate" name="appointmentDate" type="datetime-local" min="{{ \CARBON\CARBON::now() }}">
                         </div>
                     </form>
                 </div>
@@ -136,154 +138,176 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            var approvedId; // To store the id of the approved appointment
+<script>
+$(document).ready(function() {
+var approvedId; // To store the id of the approved appointment
 
-            // Function to handle the approve button click
-            $('.edit-btn').on('click', function() {
-                approvedId = $(this).data('id');
-                var email = $(this).closest('tr').find('.email').text();
-                $('#recipientEmail').val(email); // Populate recipient email field
-            });
+// Function to handle the approve button click
+$('.edit-btn').on('click', function() {
+    approvedId = $(this).data('id');
+    var email = $(this).closest('tr').find('.email').text();
+    $('#recipientEmail').val(email); // Populate recipient email field
+});
 
-            // Function to handle the confirm approve button click
-            $('#confirmApprove').on('click', function() {
-                var id = approvedId;
-                var token = $('meta[name="csrf-token"]').attr('content');
+// Function to handle the confirm approve button click
+$('#confirmApprove').on('click', function() {
+    var id = approvedId;
+    var token = $('meta[name="csrf-token"]').attr('content');
 
-                $.ajax({
-                    url: '/appointment/' + id + '/approve',
-                    method: 'POST',
-                    data: {
-                        _token: token
-                    },
-                    success: function(response) {
-                        if(response.status === 'success') {
-                            var name = $('tr[data-id="' + id + '"] .firstname').text();
-                            var email = $('#recipientEmail').val();
-                            var date = $('#appointmentDate').val();
-                            var subject = "Appointment Approved";
-                            var body = "Hi " + name + "! This is Baptist Hospital. Your request has been approved. Here's your appointment schedule: " + date;
-                            $('#emailSubject').val(subject);
-                            $('#emailBody').val(body);
-                            $('#approveModal').modal('hide'); // Hide the approve modal
-                            $('#emailModal').modal('show'); // Show the email modal
-                        }
-                    }
-                });
-            });
+    $.ajax({
+        url: '/appointment/' + id + '/approve',
+        method: 'POST',
+        data: {
+            _token: token
+        },
+        success: function(response) {
+            if(response.status === 'success') {
+                var name = response.data.firstname+' '+response.data.lastname
+                var email = response.data.email;
+                var subject = "Appointment Approved";
+                var body = "Hi " + name + "! This is Baptist Hospital. Your request has been approved. Here's your appointment schedule: ";
+                $('#emailSubject').val(subject);
+                $('#emailBody').val(body);
+                // $('#approveModal').modal('toggle');
+                $('#approveModal .close').click();
+                $('.modal .fade').removeClass('show')
+                $('.modal-backdrop.fade').hide()
+                $('#emailModal').modal('show');
+            }
+        }
+    });
+});
 
-            // Function to handle the delete button click
-            $('.delete-btn').on('click', function() {
-                var id = $(this).data('id');
-                var token = $('meta[name="csrf-token"]').attr('content');
+$('#appointmentDate').on('change',function(){
+    var datetimeValue = $(this).val();
+    var date = new Date(datetimeValue);
 
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, reject it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '/appointment/' + id + '/reject',
-                            method: 'POST',
-                            data: {
-                                _token: token
-                            },
-                            success: function(response) {
-                                if(response.status === 'success') {
-                                    $('tr[data-id="' + id + '"] .status').text('Rejected');
-                                }
-                            }
-                        });
-                    }
-                });
-            });
+    var formattedDate = formatDate(date);
+    console.log(formattedDate);
+    var body = $('#emailBody').val()+formattedDate
+    $('#emailBody').val(body);
+})
 
-            // Initialize FullCalendar
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                selectable: true,
-                select: function(info) {
-                    var selectedDate = info.startStr;
-                    var name = $('tr[data-id="' + approvedId + '"] .firstname').text();
-                    var email = $('#recipientEmail').val();
-                    var subject = "Appointment Approved";
-                    var body = "Hi " + name + "! This is Baptist Hospital. Your request has been approved. Here's your appointment schedule: " + selectedDate;
-                    $('#emailSubject').val(subject);
-                    $('#emailBody').val(body);
-                    $('#appointmentDate').val(selectedDate); // Set the selected date
-                    $('#emailModal').modal('show'); // Show the email modal when a date is selected
+function formatDate(date) {
+    var optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
+    var optionsTime = { hour: 'numeric', minute: '2-digit', hour12: true };
+
+    var formattedDate = date.toLocaleDateString('en-US', optionsDate);
+    var formattedTime = date.toLocaleTimeString('en-US', optionsTime);
+
+    return formattedDate + ' ' + formattedTime;
+}
+
+// Function to handle the delete button click
+$('.delete-btn').on('click', function() {
+    var id = $(this).data('id');
+    var token = $('meta[name="csrf-token"]').attr('content');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, reject it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/appointment/' + id + '/reject',
+                method: 'POST',
+                data: {
+                    _token: token
                 },
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                dateClick: function(info) {
-                    $('#appointmentDate').val(info.dateStr + 'T00:00'); // Set the selected date
-                    $('#emailModal').modal('show'); // Show the email modal when a date is selected
+                success: function(response) {
+                    if(response.status === 'success') {
+                        $('tr[data-id="' + id + '"] .status').text('Rejected');
+                    }
                 }
             });
-            calendar.render();
+        }
+    });
+});
+
+// Initialize FullCalendar
+// var calendarEl = document.getElementById('calendar');
+// var calendar = new FullCalendar.Calendar(calendarEl, {
+//     initialView: 'dayGridMonth',
+//     selectable: true,
+//     select: function(info) {
+//         var selectedDate = info.startStr;
+//         var name = $('tr[data-id="' + approvedId + '"] .firstname').text();
+//         var email = $('#recipientEmail').val();
+//         var subject = "Appointment Approved";
+//         var body = "Hi " + name + "! This is Baptist Hospital. Your request has been approved. Here's your appointment schedule: " + selectedDate;
+//         $('#emailSubject').val(subject);
+//         $('#emailBody').val(body);
+//         $('#appointmentDate').val(selectedDate); // Set the selected date
+//         $('#emailModal').modal('show'); // Show the email modal when a date is selected
+//     },
+//     headerToolbar: {
+//         left: 'prev,next today',
+//         center: 'title',
+//         right: 'dayGridMonth,timeGridWeek,timeGridDay'
+//     },
+//     dateClick: function(info) {
+//         $('#appointmentDate').val(info.dateStr + 'T00:00'); // Set the selected date
+//         $('#emailModal').modal('show'); // Show the email modal when a date is selected
+//     }
+// });
+// calendar.render();
 
 
-            // Function to handle send email button click
-            $('#sendEmailBtn').on('click', function() {
-                console.log('Send Email button clicked'); // Debugging statement
-                var formData = {
-                    recipientEmail: $('#recipientEmail').val(),
-                    emailSubject: $('#emailSubject').val(),
-                    emailBody: $('#emailBody').val(),
-                    appointmentDate: $('#appointmentDate').val(),
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                };
+// Function to handle send email button click
+$('#sendEmailBtn').on('click', function() {
+    console.log('Send Email button clicked'); // Debugging statement
+    var formData = {
+        recipientEmail: $('#recipientEmail').val(),
+        emailSubject: $('#emailSubject').val(),
+        emailBody: $('#emailBody').val(),
+        appointmentDate: $('#appointmentDate').val(),
+        _token: $('meta[name="csrf-token"]').attr('content')
+    };
 
-                console.log('Form Data:', formData); // Debugging statement
+    console.log('Form Data:', formData); // Debugging statement
 
-                $.ajax({
-                    url: '/appointment/sendEmail',
-                    method: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        console.log('Response:', response); // Debugging statement
-                        if(response.status === 'success') {
-                            Swal.fire(
-                                'Sent!',
-                                'The email has been sent.',
-                                'success'
-                            );
-                            $('#emailModal').modal('hide');
-                        }
-                    }
+    $.ajax({
+        url: '/appointment/sendEmail',
+        method: 'POST',
+        data: formData,
+        success: function(response) {
+            console.log('Response:', response); // Debugging statement
+            if(response.status === 'success') {
+                Swal.fire(
+                    'Sent!',
+                    'The email has been sent.',
+                    'success'
+                );
+                $('#emailModal').modal('hide');
+            }
+        }
+    });
+});
+
+$('#emailModal').on('shown.bs.modal', function() {
+    $.ajax({
+        url: '/typography', // Replace '/doctors' with the actual route to fetch doctors
+        method: 'GET',
+        success: function(response) {
+            if(response.status === 'success') {
+                var doctors = response.doctors;
+                var select = $('#doctor');
+                select.empty(); // Clear previous options
+                $.each(doctors, function(index, doctor) {
+                    var fullName = doctor.firstname + ' ' + doctor.lastname;
+                    select.append($('<option></option>').attr('value', doctor.id).text(fullName));
                 });
-            });
-
-            $('#emailModal').on('shown.bs.modal', function() {
-                $.ajax({
-                    url: '/typography', // Replace '/doctors' with the actual route to fetch doctors
-                    method: 'GET',
-                    success: function(response) {
-                        if(response.status === 'success') {
-                            var doctors = response.doctors;
-                            var select = $('#doctor');
-                            select.empty(); // Clear previous options
-                            $.each(doctors, function(index, doctor) {
-                                var fullName = doctor.firstname + ' ' + doctor.lastname;
-                                select.append($('<option></option>').attr('value', doctor.id).text(fullName));
-                            });
-                        }
-                    }
-                });
-            });
-        });
-    </script>
+            }
+        }
+    });
+});
+});
+</script>
 @endsection
 </body>
 </html>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Appointment;
+use App\Models\Doctor;
 
 class UserController extends Controller
 {
@@ -32,7 +34,11 @@ class UserController extends Controller
 
     public function dashboard()
     {
-        return view('user.userdashboard');
+        $appointments = Appointment::where('userId', auth()->id())->get();
+        $appointmentsInProgress = Appointment::where('status','in progress')
+                                            ->where('userId', auth()->id())
+                                            ->count();
+        return view('user.userdashboard',compact(['appointments','appointmentsInProgress']));
     }
 
 
