@@ -40,12 +40,12 @@
                     <p>{{ __('DOCTORS') }}</p>
                 </a>
             </li>
-            {{-- <li class="{{ $elementActive == 'notifications' ? 'active' : '' }}">
-                <a href="{{ route('page.index', 'notifications') }}">
+            <li class="{{ $elementActive == 'history' ? 'active' : '' }}">
+                <a href="{{ route('historyIndex') }}">
                     <!-- <i class="nc-icon nc-bell-55"></i> -->
                     <p>{{ __('HISTORY') }}</p>
                 </a>
-            </li> --}}
+            </li>
             <?php
                 }else{
             ?>

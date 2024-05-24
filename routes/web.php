@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\OTPController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\HistoryController;
 use App\http\Controllers\PageController;
 use App\Models\Doctor;
 /*
@@ -140,7 +141,9 @@ Route::post('login', [LoginController::class, 'login'])->middleware('throttle.lo
 // Route::post('/patients', [PatientController::class, 'store'])->name('patients.store');
 
 // Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
-//Route::get('/tables', [HomeController::class, 'pass'])->name('tables');
+
+
+Route::get('/history', [HistoryController::class, 'index'])->name('historyIndex');
 
 
 

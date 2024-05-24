@@ -1,3 +1,6 @@
+@php
+    use Illuminate\Support\Facades\Crypt;
+@endphp
 @extends('layouts.app', [
     'class' => '',
     'elementActive' => 'icons'
@@ -25,7 +28,7 @@
                         <div class="table-responsive">
                             <table class="table">
                                 <thead class="text-primary">
-                                    <th>ID</th>
+                                    {{-- <th>ID</th> --}}
                                     <th>FIRST NAME</th>
                                     <th>LAST NAME</th>
                                     <th>MIDDLE NAME</th>
@@ -40,7 +43,7 @@
                                 <tbody>
                                     @foreach($appointments as $appointment)
                                         <tr data-id="{{ $appointment->id }}">
-                                            <td>{{ $appointment->id }}</td>
+                                            {{-- <td>{{ $appointment->id }}</td> --}}
                                             <td>{{ $appointment->firstname }}</td>
                                             <td>{{ $appointment->lastname }}</td>
                                             <td>{{ $appointment->middlename }}</td>
@@ -52,8 +55,8 @@
                                             <td class="status">{{ $appointment->status }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button class="btn btn-primary btn-sm edit-btn" data-id="{{ $appointment->id }}" data-toggle="modal" data-target="#approveModal">APPROVE</button>
-                                                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ $appointment->id }}">REJECT</button>
+                                                    <button class="btn btn-primary btn-sm edit-btn" data-id="{{ Crypt::encryptString($appointment->id) }}" data-toggle="modal" data-target="#approveModal">APPROVE</button>
+                                                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ Crypt::encryptString($appointment->id) }}">REJECT</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -100,6 +103,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="emailForm">
+                        <input type="hidden" id="appID" name="appID">
                         <div class="form-group">
                             <label for="recipientEmail">Recipient Email</label>
                             <input type="email" class="form-control" id="recipientEmail" name="recipientEmail" required>
@@ -110,19 +114,19 @@
                         </div>
                         <div class="form-group">
                             <label for="emailBody">Body</label>
-                            <textarea class="form-control" id="emailBody" name="emailBody" rows="5" required></textarea>
+                            <textarea class="form-control mh-100 " style="resize: vertical" id="emailBody" name="emailBody" rows="3" required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="doctor">Select Doctor</label>
                             <select class="form-control" id="doctor" name="doctor" required>
                                 @foreach ($doctors as $doctor)
-                                    <option value="{{ $doctor->id }}">{{ $doctor->firstname }} {{ $doctor->lastname }}</option>
+                                    <option value="{{ $doctor->firstname }} {{ $doctor->lastname }}">{{ $doctor->firstname }} {{ $doctor->lastname }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="appointmentDate">Appointment Date</label>
-                            <input class="form-control" id="appointmentDate" name="appointmentDate" type="datetime-local" min="{{ \CARBON\CARBON::now() }}">
+                            <input class="form-control" id="appointmentDate" name="appointmentDate" type="datetime-local" min="{{ \CARBON\CARBON::now() }}" required>
                         </div>
                     </form>
                 </div>
@@ -141,6 +145,10 @@
 <script>
 $(document).ready(function() {
 var approvedId; // To store the id of the approved appointment
+var name;
+var formdoctor;
+var formdate;
+
 
 // Function to handle the approve button click
 $('.edit-btn').on('click', function() {
@@ -162,10 +170,12 @@ $('#confirmApprove').on('click', function() {
         },
         success: function(response) {
             if(response.status === 'success') {
-                var name = response.data.firstname+' '+response.data.lastname
+                name = response.data.firstname+' '+response.data.lastname
                 var email = response.data.email;
                 var subject = "Appointment Approved";
-                var body = "Hi " + name + "! This is Baptist Hospital. Your request has been approved. Here's your appointment schedule: ";
+                var body = emailBody(name, $('#doctor').val())
+                // var body = "Hi " + name + "! This is Baptist Hospital. Your request has been approved. Your doctor will be Dr."+ $('#doctor').val() +". Here's your appointment schedule: ";
+                $('#appID').val(approvedId);
                 $('#emailSubject').val(subject);
                 $('#emailBody').val(body);
                 // $('#approveModal').modal('toggle');
@@ -177,6 +187,19 @@ $('#confirmApprove').on('click', function() {
         }
     });
 });
+
+function emailBody(name, doctor, date=""){
+    var body = "Hi " + name + "! This is Baptist Hospital. Your request has been approved. Your doctor will be Dr."+ doctor +". Here's your appointment schedule: "+ date;
+
+    return body
+}
+
+$('#doctor').on('change',function(){
+    console.log('testdoctor')
+    formdoctor = $(this).val()
+    var bods = emailBody(name, formdoctor, formdate)
+    $('#emailBody').val(bods);
+})
 
 $('#appointmentDate').on('change',function(){
     var datetimeValue = $(this).val();
@@ -195,7 +218,8 @@ function formatDate(date) {
     var formattedDate = date.toLocaleDateString('en-US', optionsDate);
     var formattedTime = date.toLocaleTimeString('en-US', optionsTime);
 
-    return formattedDate + ' ' + formattedTime;
+    formdate = formattedDate + ' ' + formattedTime
+    return formattedDate + ' ' + formattedTime
 }
 
 // Function to handle the delete button click
@@ -221,7 +245,13 @@ $('.delete-btn').on('click', function() {
                 },
                 success: function(response) {
                     if(response.status === 'success') {
+                        Swal.fire(
+                            'Rejected!',
+                            'The appointment has been rejected.',
+                            'success'
+                        );
                         $('tr[data-id="' + id + '"] .status').text('Rejected');
+                        location.reload()
                     }
                 }
             });
@@ -266,17 +296,16 @@ $('#sendEmailBtn').on('click', function() {
         emailSubject: $('#emailSubject').val(),
         emailBody: $('#emailBody').val(),
         appointmentDate: $('#appointmentDate').val(),
+        doctor: $('#doctor').val(),
+        appID: $('#appID').val(),
         _token: $('meta[name="csrf-token"]').attr('content')
     };
-
-    console.log('Form Data:', formData); // Debugging statement
 
     $.ajax({
         url: '/appointment/sendEmail',
         method: 'POST',
         data: formData,
         success: function(response) {
-            console.log('Response:', response); // Debugging statement
             if(response.status === 'success') {
                 Swal.fire(
                     'Sent!',
@@ -284,6 +313,7 @@ $('#sendEmailBtn').on('click', function() {
                     'success'
                 );
                 $('#emailModal').modal('hide');
+                location.reload()
             }
         }
     });

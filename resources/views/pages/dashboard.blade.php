@@ -111,12 +111,11 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-md-12">
                 <div class="card ">
                     <div class="card-header ">
                         <h5 class="card-title">User's Appointments</h5>
-                        {{-- <p class="card-category">24 Hours performance</p> --}}
                     </div>
                     <div class="card-body ">
                         <table class="table">
@@ -144,12 +143,6 @@
                             </tbody>
                         </table>
                     </div>
-                    {{-- <div class="card-footer ">
-                        <hr>
-                        <div class="stats">
-                            <i class="fa fa-history"></i> Updated 3 minutes ago
-                        </div>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -158,7 +151,6 @@
                 <div class="card ">
                     <div class="card-header ">
                         <h5 class="card-title">Doctors</h5>
-                        {{-- <p class="card-category">Last Campaign Performance</p> --}}
                     </div>
                     <div class="card-body ">
                         <table class="table">
@@ -180,25 +172,12 @@
                             </tbody>
                         </table>
                     </div>
-                    {{-- <div class="card-footer ">
-                        <div class="legend">
-                            <i class="fa fa-circle text-primary"></i> Opened
-                            <i class="fa fa-circle text-warning"></i> Read
-                            <i class="fa fa-circle text-danger"></i> Deleted
-                            <i class="fa fa-circle text-gray"></i> Unopened
-                        </div>
-                        <hr>
-                        <div class="stats">
-                            <i class="fa fa-calendar"></i> Number of emails sent
-                        </div>
-                    </div> --}}
                 </div>
             </div>
             <div class="col-md-8">
                 <div class="card card-chart">
                     <div class="card-header">
                         <h5 class="card-title">Users</h5>
-                        {{-- <p class="card-category">Line Chart with Points</p> --}}
                     </div>
                     <div class="card-body">
                         <table class="table">
@@ -220,12 +199,9 @@
                             </tbody>
                         </table>
                     </div>
-                    {{-- <div class="card-footer">
-                       
-                    </div> --}}
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
 

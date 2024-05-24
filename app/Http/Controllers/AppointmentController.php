@@ -7,6 +7,7 @@ use App\Mail\AppointmentApproved;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Appointment;
 use App\Models\Doctor;
+use Illuminate\Support\Facades\Crypt;
 
 class AppointmentController extends Controller
 {
@@ -23,6 +24,11 @@ class AppointmentController extends Controller
         $subject = $request->input('emailSubject');
         $body = $request->input('emailBody');
 
+        $id = Crypt::decryptString($request->appID);
+        $appointment = Appointment::find($id);
+        $appointment->doctor = $request->doctor;
+        $appointment->save();
+        
         Mail::to($email)->send(new AppointmentApproved($subject, $body));
 
         return response()->json(['status' => 'success']);
@@ -30,6 +36,7 @@ class AppointmentController extends Controller
     
     public function approve($id)
     {
+        $id = Crypt::decryptString($id);
         $appointment = Appointment::findOrFail($id);
         $appointment->status = 'Approved';
         $appointment->dateApproved = \CARBON\CARBON::NOW();
@@ -44,6 +51,7 @@ class AppointmentController extends Controller
 
     public function cancel($id)
     {
+        $id = Crypt::decryptString($id);
         $appointment = Appointment::findOrFail($id);
         $appointment->status = 'Rejected';
         $appointment->save();
