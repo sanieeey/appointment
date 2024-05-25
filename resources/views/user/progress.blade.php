@@ -126,8 +126,8 @@
                                                 <td>{{$appointment->status}}</td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <button class="btn btn-primary btn-sm edit-btn" appointment-id="{{ $appointment->id }}" data-toggle="modal" data-target="#editApp" id="editAppBtn">EDIT</button>
-                                                        <button class="btn btn-danger btn-sm delete-btn" appointment-id="{{ $appointment->id }}" id="deleteAppBtn">DELETE</button>
+                                                        <button class="btn btn-primary btn-sm edit-btn" appointment-id="{{ Crypt::encryptString($appointment->id) }}" data-toggle="modal" data-target="#editApp" id="editAppBtn">EDIT</button>
+                                                        <button class="btn btn-danger btn-sm delete-btn" appointment-id="{{ Crypt::encryptString($appointment->id) }}" id="deleteAppBtn">DELETE</button>
                                                     </div>
                                                 </td>
                                             </tr>

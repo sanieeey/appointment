@@ -29,7 +29,7 @@ class AppointmentController extends Controller
         $appointment->doctor = $request->doctor;
         $appointment->save();
         
-        Mail::to($email)->send(new AppointmentApproved($subject, $body));
+        // Mail::to($email)->send(new AppointmentApproved($subject, $body));
 
         return response()->json(['status' => 'success']);
     }
@@ -97,10 +97,12 @@ class AppointmentController extends Controller
     }
     
     function getAppointment($id){
+        $id = Crypt::decryptString($id);
         $appointment = Appointment::findOrFail($id);
         return response()->json(['status' => 'success', 'data' =>  $appointment]);
     }
     function deleteAppointment($id){
+        $id = Crypt::decryptString($id);
         $appointment = Appointment::findOrFail($id);
         $appointment->delete();
         return response()->json(['status' => 'success']);
@@ -117,8 +119,8 @@ class AppointmentController extends Controller
             'phone_number' => 'required|string|max:255',
             'reason' => 'required|string|max:255',
         ]);
-
-        $appointment = Appointment::findOrFail($request['appId']);
+        $id = Crypt::decryptString($request['appId']);
+        $appointment = Appointment::findOrFail($id);
         $appointment->firstname = $validatedData['firstname'];
         $appointment->lastname = $validatedData['lastname'];
         $appointment->middlename = $validatedData['middlename'];

@@ -12,6 +12,12 @@
                         <h5 class="card-title">User's Appointments</h5>
                     </div>
                     <div class="card-body ">
+                        <div class="row justify-content-end">
+                            <div class="d-flex align-items-center px-3">
+                                <label for="filterdate" class=" text-nowrap mt-1 mx-1">Filter Approved date:</label>
+                                <input type="month" class="form-control" id="filterdate" name="filterdate">
+                            </div>
+                        </div>
                         <table class="table" id="myTable">
                             <thead>
                                 <th>User Name</th>
@@ -20,6 +26,7 @@
                                 <th>Phone</th>
                                 <th>Purpose</th>
                                 <th>Status</th>
+                                <th>Date Approved</th>
                                 <th>Doctor</th>                            
                             </thead>
                             <tbody>
@@ -31,6 +38,11 @@
                                         <td>{{ $appointment->phone_number }}</td>
                                         <td>{{ $appointment->reason }}</td>
                                         <td>{{ $appointment->status }}</td>
+                                        <td>
+                                            @if ($appointment->status == 'Approved')
+                                                {{ \Carbon\Carbon::parse($appointment->dateApproved )->format('F d Y') }}
+                                            @endif
+                                        </td>
                                         <td>{{ $appointment->doctor}}</td>
                                     </tr>
                                 @endforeach
@@ -52,11 +64,22 @@
         // let table = new DataTable('#myTable');
 
         $(document).ready(function() {
-            $('#myTable').DataTable({
-                "lengthChange": false
+            var table = $('#myTable').DataTable({
+                "lengthChange": false,
+                "bFilter": true,
+            });
+            $('#filterdate').on('change', function() {
+                var filterDate = $(this).val();
+                if(filterDate != ''){
+                    var dateObj = new Date(filterDate + '-01');
+                    var formattedDate = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                }else{
+                    formattedDate = '';
+                }
+                table.search(formattedDate).draw();
+                $('#dt-search-0').val('');
             });
         });
-
 
         // Javascript method's body can be found in assets/assets-for-demo/js/demo.js
         // demo.initChartsPages();
