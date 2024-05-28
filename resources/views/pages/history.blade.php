@@ -20,7 +20,7 @@
                         </div>
                         <table class="table" id="myTable">
                             <thead>
-                                <th>User Name</th>
+                                <th>Name</th>
                                 <th>Address</th>
                                 <th>Email</th>
                                 <th>Phone</th>

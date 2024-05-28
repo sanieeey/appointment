@@ -155,34 +155,35 @@
                             @csrf
                             <input class="d-none" type="text" id="appId" name="appId">
                             <div class="row">
-                                <div class="form-group col-6">
+                                {{-- <div class="form-group col-6">
                                     <label class="form-label" for="firstname">Firstname:</label>
                                     <input class="form-control" type="text" name="firstname" id="firstname">
-                                </div>
-                                <div class="form-group col-6">                       
+                                </div> --}}
+                                {{-- <div class="form-group col-6">                       
                                     <label class="form-label" for="lastname">Lastname:</label>
                                     <input class="form-control" type="text" name="lastname" id="lastname" required>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="row">
-                                <div class="form-group col-6">                       
+                                {{-- <div class="form-group col-6">                       
                                     <label class="form-label" for="middlename">MiddleName:</label>
                                     <input class="form-control" type="text" name="middlename" id="middlename" required>
-                                </div>
+                                </div> --}}
                                 <div class="form-group col-6">                       
                                     <label class="form-label" for="birthdate">Birth Date:</label>
                                     <input class="form-control" type="date" name="birthdate" id="birthdate" required>
                                 </div>
-                            </div>
-                            <div class="row">
+                                
                                 <div class="form-group col-6">
                                     <label class="form-label" for="address">Address:</label>
                                     <input class="form-control" type="text" name="address" id="address">
                                 </div>
-                                <div class="form-group col-6">                       
+                            </div>
+                            <div class="row">
+                                {{-- <div class="form-group col-6">                       
                                     <label class="form-label" for="email">Email:</label>
                                     <input class="form-control" type="email" name="email" id="email" required>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="row">
                                 <div class="form-group col-6">
@@ -218,8 +219,8 @@
         var id = $(this).attr('appointment-id')
         $('#appId').val('')
         $('#firstname').val('')
-        $('#lastname').val('')
-        $('#middlename').val('')
+        // $('#lastname').val('')
+        // $('#middlename').val('')
         $('#email').val('')
         $('#address').val('')
         $('#birthdate').val('')
@@ -235,8 +236,8 @@
                 if(response.status === 'success') {
                     $('#appId').val(id)
                     $('#firstname').val(response.data.firstname)
-                    $('#lastname').val(response.data.lastname)
-                    $('#middlename').val(response.data.middlename)
+                    // $('#lastname').val(response.data.lastname)
+                    // $('#middlename').val(response.data.middlename)
                     $('#email').val(response.data.email)
                     $('#address').val(response.data.address)
                     $('#birthdate').val(response.data.birthdate)

@@ -135,43 +135,26 @@
                         <form id="appointmentform">
                             @csrf
                             <div class="column">
-                                <label for="firstname">First Name:</label>
+                                {{-- <label for="firstname">First Name:</label>
                                 <input type="text" name="firstname" id="firstname" required>
     
                                 <label for="lastname">Last Name:</label>
                                 <input type="text" name="lastname" id="lastname" required>
     
                                 <label for="middlename">Middle Name:</label>
-                                <input type="text" name="middlename" id="middlename">
+                                <input type="text" name="middlename" id="middlename"> --}}
     
+                                <label for="address">Address:</label>
+                                <input type="text" name="address" id="address">
                                 <label for="edit_birthdate">Birth Date</label>
                                 <input type="date" class="form-control" name="birthday">
-                                {{-- <select class="form-control" id="edit_birthdate_day" name="birthdate_day" required>
-                                    <option value="">Day</option>
-                                    @for ($day = 1; $day <= 31; $day++)
-                                        <option value="{{ $day }}">{{ $day }}</option>
-                                    @endfor
-                                </select>
-                                <select class="form-control mt-2" id="edit_birthdate_month" name="birthdate_month" required>
-                                    <option value="">Month</option>
-                                    @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                                        <option value="{{ $month }}">{{ $month }}</option>
-                                    @endforeach
-                                </select>
-                                <select class="form-control mt-2" id="edit_birthdate_year" name="birthdate_year" required>
-                                    <option value="">Year</option>
-                                    @for ($year = date('Y'); $year >= 1900; $year--)
-                                        <option value="{{ $year }}">{{ $year }}</option>
-                                    @endfor
-                                </select> --}}
                             </div>
     
                             <div class="column">
-                                <label for="address">Address:</label>
-                                <input type="text" name="address" id="address">
+                                
     
-                                <label for="email">Email:</label>
-                                <input type="email" name="email" id="email" required>
+                                {{-- <label for="email">Email:</label>
+                                <input type="email" name="email" id="email" required> --}}
     
                                 <label for="phone_number">Phone Number:</label>
                                 <input type="text" name="phone_number" id="phone_number">

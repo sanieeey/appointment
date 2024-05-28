@@ -29,9 +29,9 @@
                             <table class="table">
                                 <thead class="text-primary">
                                     {{-- <th>ID</th> --}}
-                                    <th>FIRST NAME</th>
-                                    <th>LAST NAME</th>
-                                    <th>MIDDLE NAME</th>
+                                    <th>NAME</th>
+                                    {{-- <th>LAST NAME</th>
+                                    <th>MIDDLE NAME</th> --}}
                                     <th>BIRTHDATE</th>
                                     <th>ADDRESS</th>
                                     <th>EMAIL</th>
@@ -45,8 +45,8 @@
                                         <tr data-id="{{ $appointment->id }}">
                                             {{-- <td>{{ $appointment->id }}</td> --}}
                                             <td>{{ $appointment->firstname }}</td>
-                                            <td>{{ $appointment->lastname }}</td>
-                                            <td>{{ $appointment->middlename }}</td>
+                                            {{-- <td>{{ $appointment->lastname }}</td>
+                                            <td>{{ $appointment->middlename }}</td> --}}
                                             <td>{{ $appointment->birthdate }}</td>
                                             <td>{{ $appointment->address }}</td>
                                             <td class="email">{{ $appointment->email }}</td>

@@ -26,7 +26,7 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead class="text-primary">
-                                <th>ID</th>
+                                {{-- <th>ID</th> --}}
                                 <th>FIRSTNAME</th>
                                 <th>LASTNAME</th>
                                 <th>PHONE NUMBER</th>
@@ -37,7 +37,7 @@
                             <tbody>
                                 @foreach($doctors as $doctor)
                                     <tr>
-                                        <td>{{$doctor->id}}</td>
+                                        {{-- <td>{{$doctor->id}}</td> --}}
                                         <td>{{$doctor->firstname}}</td>
                                         <td>{{$doctor->lastname}}</td>
                                         <td>{{$doctor->phone_number}}</td>
